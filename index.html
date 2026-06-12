@@ -8,7 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Contas">
 <title>Contas da Casa</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">
+function toggleCategRes(el){el.parentNode.classList.toggle('aberto');}
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -436,7 +438,7 @@ function render(){
   dm.contas.forEach(function(c){cats[c.categoria]=(cats[c.categoria]||0)+(c.valorReal||0);tEst+=c.valorEstimado||0;tReal+=c.valorReal||0});
   let html='<div class="secao-t">Por Categoria</div>';
   const entradas=Object.keys(cats).map(function(k){return[k,cats[k]]}).sort(function(a,b){return b[1]-a[1]});
-  html+=entradas.length?entradas.map(function(e){var cat=e[0],val=e[1];var contas=dm.contas.filter(function(c){return c.categoria===cat});var subRows=contas.map(function(c){var pago=c.status==='pago';return '<div class="res-sub-linha" style="display:none;padding:6px 0 6px 24px;font-size:12.5px;color:'+(pago?'#a8e6a3':'#e8a84c')+';border-bottom:1px solid rgba(255,255,255,.04)">'+(pago?'✅':'⏳')+' '+c.nome+'<span style="float:right;font-weight:700">'+fmt(pago?c.valorReal:c.valorEstimado)+'</span></div>';}).join('');return '<div class="res-linha-exp"><div class="res-linha" style="cursor:pointer" onclick="this.parentNode.classList.toggle(&quot;aberto&quot;)"><span>'+(ICONES[cat]||'📌')+' '+cat+'</span><span style="display:flex;align-items:center;gap:8px"><span class="v">'+fmt(val)+'</span><span class="exp-arrow" style="font-size:11px;transition:transform 0.2s">▶</span></span></div><div class="res-sub">'+subRows+'</div></div>';}}).join(''):'<div class="vazio">Sem dados</div>';
+  html+=entradas.length?entradas.map(function(e){var cat=e[0],val=e[1];var contas=dm.contas.filter(function(c){return c.categoria===cat});var subRows=contas.map(function(c){var pago=c.status==='pago';return '<div class="res-sub-linha" style="display:none;padding:6px 0 6px 24px;font-size:12.5px;color:'+(pago?'#a8e6a3':'#e8a84c')+';border-bottom:1px solid rgba(255,255,255,.04)">'+(pago?'✅':'⏳')+' '+c.nome+'<span style="float:right;font-weight:700">'+fmt(pago?c.valorReal:c.valorEstimado)+'</span></div>';}).join('');return '<div class="res-linha-exp"><div class="res-linha" style="cursor:pointer" onclick="toggleCategRes(this)"><span>'+(ICONES[cat]||'📌')+' '+cat+'</span><span style="display:flex;align-items:center;gap:8px"><span class="v">'+fmt(val)+'</span><span class="exp-arrow" style="font-size:11px;transition:transform 0.2s">▶</span></span></div><div class="res-sub">'+subRows+'</div></div>';}}).join(''):'<div class="vazio">Sem dados</div>';
   /* Gráfico SVG (inserido aqui pelo script abaixo via renderGrafico) */
   html+='<div id="grafico-placeholder"></div>';
   html+='<div class="secao-t">Estimado × Real</div>';
